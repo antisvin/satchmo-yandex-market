@@ -4,20 +4,30 @@ from xml.etree import ElementTree as et
 
 
 class YMLGenerator(object):
-    def __init__(self, domain):
-        self.domain = domain
-        self.config = None
-        
-    def get_header(self):
-        """
-        Returns YML header.
-        """
-        return '''
+    """
+    Generates YML file for given domain.
+    """
+    
+    header = '''
         <?xml version="1.0" encoding="utf-8"?>
         <!DOCTYPE yml_catalog SYSTEM "shops.dtd">
         '''
 
+    def __init__(self, domain):
+        """
+        @domain: domain for which we generate data.
+        @type domain: unicode
+        """
+        self.domain = domain
+        self.config = None
+        
     def get_root_elt(self, date=None):
+        """
+        Create root element.
+
+        @date: date and time to use. If not set, uses current datetime.
+        @type date: datetime.datetime
+        """
         if date is None:
             date = datetime.datetime.now()
         return et.Element("yml_catalog", date=date.strftime('%Y-%m-%d %H:%M'))
