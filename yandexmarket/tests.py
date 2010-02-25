@@ -15,7 +15,6 @@ class SimpleTest(unittest.TestCase):
     def setUp(self):
         self.yml = utils.YMLGenerator('http://example.com')
         
-    def 
 
 
 __test__ = {"doctest": """

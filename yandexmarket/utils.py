@@ -1,9 +1,9 @@
 import datetime
-from satchmo_store.models import Config
+from satchmo_store.shop.models import Config
 from xml.etree import ElementTree as et
 
 
-class YMLGenerator(objects):
+class YMLGenerator(object):
     def __init__(self, domain):
         self.domain = domain
         self.config = None
