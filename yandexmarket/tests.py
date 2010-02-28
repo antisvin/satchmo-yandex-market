@@ -8,9 +8,10 @@ Replace these with more appropriate tests for your application.
 import datetime
 from django import test
 from django.conf import settings
+from django.core import urlresolvers
 from xml.etree import ElementTree as et
 from yandexmarket import utils
-#from django.test import TestCase
+
 
 class SimpleTest(test.TestCase):
     fixtures = (
@@ -84,5 +85,21 @@ class SimpleTest(test.TestCase):
              '<downloadable>false</downloadable></offer>'
              '</offers>'))
         
-
+    def test_generate(self):
+        """
+        We simple concatenate tested elements here, so for now we just make
+        sure that there's no runtime errors.
+        """
+        self.yml.generate()
     
+
+class ViewTest(test.TestCase):
+    fixtures = (
+        'sample-store-data.yaml', 'yandexmarket_products.yaml',
+        'test-config.yaml')
+    
+    def test_generate_yml_view(self):
+        response = self.client.get(
+            urlresolvers.reverse('generate_yml'), HTTP_HOST='example.com')
+        self.failUnlessEqual(response.status_code, 200)
+        

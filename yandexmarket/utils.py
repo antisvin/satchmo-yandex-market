@@ -3,6 +3,7 @@ from django.conf import settings
 from satchmo_store.shop.models import Config
 from xml.etree import ElementTree as et
 
+# TODO: local_delivery_cost, delivery ?
 
 class YMLGenerator(object):
     """
@@ -106,7 +107,17 @@ class YMLGenerator(object):
 
         return offers_elt
                 
-    def generate():
+    def generate(self):
         """
         Returns YML representatio of all shops data.
         """
+        root = self.get_root_elt()
+
+        shop = self.get_shop_elt()
+        root.append(shop)
+
+        shop.append(self.get_currencies_elt())
+        shop.append(self.get_categories_elt())
+        shop.append(self.get_offers_elt())
+        
+        return self.header + et.tostring(root)
