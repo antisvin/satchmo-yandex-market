@@ -33,12 +33,12 @@ class YMLGenerator(object):
         return et.Element("yml_catalog", date=date.strftime('%Y-%m-%d %H:%M'))
 
     def get_shop_elt(self, root):
-        self.config = Config.objects.get(site__domain_name=self.domain)
+        self.config = Config.objects.get(site__domain=self.domain)
         
         shop_elt = et.SubElement(root, "shop")
         et.SubElement(shop_elt, "name").text = self.config.store_name
-        et.SubElement(shop_elt, "company").text = self.config.site.display_name
-        et.SubElement(shop_elt, "url").text = self.domain_name
+        et.SubElement(shop_elt, "company").text = self.config.site.name
+        et.SubElement(shop_elt, "url").text = 'http://%s/' % self.domain
 
         return shop_elt
     
