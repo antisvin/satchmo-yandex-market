@@ -1,4 +1,5 @@
 import datetime
+from django.conf import settings
 from satchmo_store.shop.models import Config
 from xml.etree import ElementTree as et
 
@@ -19,7 +20,7 @@ class YMLGenerator(object):
         @type domain: unicode
         """
         self.domain = domain
-        self.config = None
+        self.config = Config.objects.get(site__domain=self.domain)
         
     def get_root_elt(self, date=None):
         """
@@ -32,61 +33,78 @@ class YMLGenerator(object):
             date = datetime.datetime.now()
         return et.Element("yml_catalog", date=date.strftime('%Y-%m-%d %H:%M'))
 
-    def get_shop_elt(self, root):
-        self.config = Config.objects.get(site__domain=self.domain)
-        
-        shop_elt = et.SubElement(root, "shop")
+    def get_shop_elt(self):
+        shop_elt = et.Element("shop")
         et.SubElement(shop_elt, "name").text = self.config.store_name
         et.SubElement(shop_elt, "company").text = self.config.site.name
         et.SubElement(shop_elt, "url").text = 'http://%s/' % self.domain
 
         return shop_elt
+
+    def get_currencies_elt(self):
+        currencies_elt = et.Element("currencies")
+        et.SubElement(currencies_elt, "currency", id="RUR", rate="1")
+        
+        for currency in settings.YANDEXMARKET_CURRENCIES:
+            et.SubElement(
+                currencies_elt, "currency", id=currency, rate="CBRF")
+
+        return currencies_elt
     
-    def get_categories_elt(self, shop_elt):
-        categories_elt = et.SubElement(shop_elt, "categories")
-        top_categories = config.site.category_set.filter(
+    def get_categories_elt(self):
+        categories_elt = et.Element("categories")
+        top_categories = self.config.site.category_set.filter(
             parent__isnull=True, is_active=True)
         for top_category in top_categories:
             et.SubElement(
-                categories_elt, "category", id=top_category.pk
+                categories_elt, "category", id=unicode(top_category.pk)
                 ).text = top_category.name
             
             for subcategory in top_category.get_active_children():
                 et.SubElement(
-                    categories_elt, "category", id=subcategory.pk
+                    categories_elt, "category", id=unicode(subcategory.pk),
+                    parentId=unicode(subcategory.parent.id)
                     ).text = subcategory.name
 
         return categories_elt
 
-    def get_offers_elt(self, shop_elt):
-        offers_elt = et.SubElement(shop_elt, "offers")
-        for product in self.config.product_set.filter(active=True):
+    def get_offers_elt(self):
+        offers_elt = et.Element("offers")
+        for product in self.config.site.product_set.filter(
+            active=True, category__isnull=False):
             offer_elt = et.SubElement(
-                offers_elt, "offer", id=product.id, available="true")
+                offers_elt, "offer", id=unicode(product.id), available="true")
             et.SubElement(offer_elt, "url").text = ''.join((
                 'http://', self.domain, product.get_absolute_url()))
-            et.SubElement(offer_elt, "price").text = product.get_qty_price(1)
+            et.SubElement(offer_elt, "price").text = unicode(product.get_qty_price(1))
             et.SubElement(
                 offer_elt, "currencyId"
-                ).text = settings.YANDEX_DEFAULT_CURRENCY
+                ).text = settings.YANDEXMARKET_DEFAULT_CURRENCY
 
-            category = product.category_set.all()[0]
-            et.SubElement(offer_elt, "categoryId").text = category.pk
+            category = product.category.all()[0]
+            et.SubElement(offer_elt, "categoryId").text = unicode(category.pk)
 
-            if self.productimage_set.count() > 0:
-                img = self.productimage_set.order_by('sort')[0]
+            if product.productimage_set.count() > 0:
+                img = product.productimage_set.order_by('sort')[0]
                 et.SubElement(offer_elt, "picture").text = ''.join((
                     'http://', self.domain, img.picture.url))
 
             et.SubElement(offer_elt, "typePrefix").text = category.name
             et.SubElement(offer_elt, "name").text = product.name
             et.SubElement(offer_elt, "delivery").text = "true"
-            et.SubElement(offer_elt, "description").text = product.description
+
+            if product.description:
+                et.SubElement(offer_elt, "description").text = product.description
+
             et.SubElement(offer_elt, "available").text = unicode(
                 product.items_in_stock > 0).lower()
-            et.SubElement(
-                offer_elt, "sales_notes").text = product.short_description
+
+            if product.short_description:
+                et.SubElement(
+                    offer_elt, "sales_notes").text = product.short_description
             et.SubElement(offer_elt, "downloadable").text = "false"
+
+        return offers_elt
                 
     def generate():
         """
