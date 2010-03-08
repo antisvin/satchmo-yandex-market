@@ -86,7 +86,6 @@ class SimpleTest(test.TestCase):
              '<name>satchmo computer</name>'
              '<vendorCode>satch-1</vendorCode>'
              '<description>Satchmo computer. It does it all!</description>'
-             '<sales_notes>Not much else to say.</sales_notes>'
              '<downloadable>false</downloadable></offer>'
              '</offers>'))
         
@@ -134,7 +133,6 @@ class SimpleTest(test.TestCase):
              '<name>satchmo computer</name>'
              '<vendorCode>satch-1</vendorCode>'
              '<description>Satchmo computer. It does it all!</description>'
-             '<sales_notes>Not much else to say.</sales_notes>'
              '<downloadable>false</downloadable></offer>'
              '</offers>'))
 

@@ -96,9 +96,6 @@ class YMLGenerator(object):
             if product.description:
                 et.SubElement(offer_elt, "description").text = product.description
 
-            if product.short_description:
-                et.SubElement(
-                    offer_elt, "sales_notes").text = product.short_description
             et.SubElement(offer_elt, "downloadable").text = "false"
 
         return offers_elt
