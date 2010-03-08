@@ -91,7 +91,45 @@ class SimpleTest(test.TestCase):
         sure that there's no runtime errors.
         """
         self.yml.generate()
-    
+
+    def test_no_settings(self):
+        del settings.YANDEXMARKET_CURRENCIES
+        del settings.YANDEXMARKET_DEFAULT_CURRENCY
+
+        elt = self.yml.get_currencies_elt()
+        self.assertEquals(
+            et.tostring(elt),
+            '<currencies><currency id="RUR" rate="1" /></currencies>')
+        
+        elt = self.yml.get_offers_elt()
+        self.assertEquals(
+            et.tostring(elt),
+            ('<offers>'
+             '<offer available="true" id="3">'
+             '<url>http://example.com/store/product/neat-book/</url>'
+             '<price>5.00</price><currencyId>RUR</currencyId>'
+             '<categoryId>4</categoryId><typePrefix>Fiction</typePrefix>'
+             '<name>A really neat book</name><delivery>true</delivery>'
+             '<description>A neat book.  You should buy it.</description>'
+             '<available>false</available><downloadable>false</downloadable>'
+             '</offer><offer available="true" id="15">'
+             '<url>http://example.com/store/product/neat-book-hard/</url>'
+             '<price>5.00</price><currencyId>RUR</currencyId>'
+             '<categoryId>3</categoryId><typePrefix>Books</typePrefix>'
+             '<name>A really neat book (Hard cover)</name>'
+             '<delivery>true</delivery><available>false</available>'
+             '<downloadable>false</downloadable></offer>'
+             '<offer available="true" id="30">'
+             '<url>http://example.com/store/product/satchmo-computer/</url>'
+             '<price>123.00</price><currencyId>RUR</currencyId>'
+             '<categoryId>8</categoryId><typePrefix>Hardware</typePrefix>'
+             '<name>satchmo computer</name><delivery>true</delivery>'
+             '<description>Satchmo computer. It does it all!</description>'
+             '<available>false</available>'
+             '<sales_notes>Not much else to say.</sales_notes>'
+             '<downloadable>false</downloadable></offer>'
+             '</offers>'))
+
 
 class ViewTest(test.TestCase):
     fixtures = (

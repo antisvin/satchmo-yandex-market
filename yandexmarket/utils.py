@@ -3,7 +3,6 @@ from django.conf import settings
 from satchmo_store.shop.models import Config
 from xml.etree import ElementTree as et
 
-# TODO: local_delivery_cost, delivery ?
 
 class YMLGenerator(object):
     """
@@ -46,7 +45,7 @@ class YMLGenerator(object):
         currencies_elt = et.Element("currencies")
         et.SubElement(currencies_elt, "currency", id="RUR", rate="1")
         
-        for currency in settings.YANDEXMARKET_CURRENCIES:
+        for currency in getattr(settings, 'YANDEXMARKET_CURRENCIES', ()):
             et.SubElement(
                 currencies_elt, "currency", id=currency, rate="CBRF")
 
@@ -80,7 +79,7 @@ class YMLGenerator(object):
             et.SubElement(offer_elt, "price").text = unicode(product.get_qty_price(1))
             et.SubElement(
                 offer_elt, "currencyId"
-                ).text = settings.YANDEXMARKET_DEFAULT_CURRENCY
+                ).text = getattr(settings, 'YANDEXMARKET_DEFAULT_CURRENCY', 'RUR')
 
             category = product.category.all()[0]
             et.SubElement(offer_elt, "categoryId").text = unicode(category.pk)
