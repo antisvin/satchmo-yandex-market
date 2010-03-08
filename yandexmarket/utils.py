@@ -9,10 +9,9 @@ class YMLGenerator(object):
     Generates YML file for given domain.
     """
     
-    header = '''
-        <?xml version="1.0" encoding="utf-8"?>
-        <!DOCTYPE yml_catalog SYSTEM "shops.dtd">
-        '''
+    header = (
+        '<?xml version="1.0" encoding="utf-8"?>\n'
+        '<!DOCTYPE yml_catalog SYSTEM "shops.dtd">\n')
 
     def __init__(self, domain):
         """
