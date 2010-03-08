@@ -104,6 +104,7 @@
     length: null
     meta: null
     slug: neat-book
+    sku: nb123
     related_items: []
     short_description: ''
     taxClass: null
@@ -126,6 +127,7 @@
     length: null
     meta: null
     slug: neat-book-hard
+    sku: nb234
     related_items: []
     short_description: ''
     taxClass: null
