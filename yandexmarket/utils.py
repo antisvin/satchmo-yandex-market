@@ -72,7 +72,8 @@ class YMLGenerator(object):
         for product in self.config.site.product_set.filter(
             active=True, category__isnull=False):
             offer_elt = et.SubElement(
-                offers_elt, "offer", id=unicode(product.id), available="true")
+                offers_elt, "offer", id=unicode(product.id),
+                available=unicode(product.items_in_stock > 0).lower())
             et.SubElement(offer_elt, "url").text = ''.join((
                 'http://', self.domain, product.get_absolute_url()))
             et.SubElement(offer_elt, "price").text = unicode(product.get_qty_price(1))
@@ -94,9 +95,6 @@ class YMLGenerator(object):
 
             if product.description:
                 et.SubElement(offer_elt, "description").text = product.description
-
-            et.SubElement(offer_elt, "available").text = unicode(
-                product.items_in_stock > 0).lower()
 
             if product.short_description:
                 et.SubElement(

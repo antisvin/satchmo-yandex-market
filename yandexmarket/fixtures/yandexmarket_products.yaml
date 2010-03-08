@@ -255,7 +255,7 @@
     featured: false
     height: null
     height_units: ''
-    items_in_stock: 0
+    items_in_stock: 10
     length: null
     length_units: ''
     meta: ''
