@@ -89,9 +89,8 @@ class YMLGenerator(object):
                 et.SubElement(offer_elt, "picture").text = ''.join((
                     'http://', self.domain, img.picture.url))
 
-            et.SubElement(offer_elt, "typePrefix").text = category.name
             et.SubElement(offer_elt, "name").text = product.name
-            et.SubElement(offer_elt, "model").text = product.sku
+            et.SubElement(offer_elt, "vendorCode").text = product.sku
             et.SubElement(offer_elt, "delivery").text = "true"
 
             if product.description:
