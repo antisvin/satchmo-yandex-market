@@ -1,0 +1,9 @@
+1, Add 'yandexmarket' to your settings.INSTALLED_APPS dictionary.
+
+2. Include 'yandexmarket.urls' in your urls module.
+
+Optional:
+
+3. Add YANDEXMARKET_CURRENCIES to your settings. It's a list of values, i.e. ('USD', 'EUR')
+
+4. Add YANDEXMARKET_DEFAULT_CURRENCY to your settings.
